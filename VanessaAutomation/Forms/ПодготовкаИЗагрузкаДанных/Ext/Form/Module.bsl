@@ -2882,7 +2882,9 @@ Function GeValuetStringRepresentation(DataValue, RefReplaceMetadataObjects)
 			ReturnValue = StrReplace(ReturnValue, "'", "\'");
 			ReturnValue = StrReplace(ReturnValue, "|", "\|");
 		EndIf;
-	ElsIf isMetadataObjectAndDataValueNotEmpty(MetadataObject, DataValue) Then
+		
+	ElsIf isMetadataObjectNotEmpty(MetadataObject) Then
+	
 		PredefinedCheck = New Structure;
 		PredefinedCheck.Insert("Predefined", Undefined);
 		FillPropertyValues(PredefinedCheck, DataValue);		
@@ -2953,14 +2955,18 @@ EndFunction
 
 &AtServer
 Function isMetadataObjectAndDataValueNotEmpty(MetadataObject, DataValue)
+	Return isMetadataObjectNotEmpty(MetadataObject) And Not DataValue.IsEmpty();
+EndFunction
+		
+&AtServer
+Function isMetadataObjectNotEmpty(MetadataObject)
 	Return MetadataObject <> Undefined
 			And (Metadata.Catalogs.Contains(MetadataObject)
 				Or Metadata.Documents.Contains(MetadataObject)
 				Or Metadata.ChartsOfCharacteristicTypes.Contains(MetadataObject)
 				Or Metadata.ChartsOfAccounts.Contains(MetadataObject)
-				Or Metadata.ChartsOfCalculationTypes.Contains(MetadataObject))
-			And Not DataValue.IsEmpty();
-EndFunction
+				Or Metadata.ChartsOfCalculationTypes.Contains(MetadataObject));
+EndFunction		
 
 &AtServer
 Function GetManagerByMetadataObject(MetadataObject) Export
